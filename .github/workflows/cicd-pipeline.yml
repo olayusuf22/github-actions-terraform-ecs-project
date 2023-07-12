@@ -1,15 +1,15 @@
-name: Deploy Pipeline
+name: Deploy
 
-    on:
+on:
       push:
         branches: [main]
     
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: us-east-1
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: us-east-1
     
-    jobs:
+jobs:
       # Configure AWS credentials 
       configure_aws_credentials:
         name: Configure AWS credentials
