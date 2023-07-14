@@ -15,7 +15,7 @@ env:
   WEB_FILE_UNZIP: rentzone
     
 jobs:
-      # Configure AWS credentials 
+      # Configure AWS credentials
       configure_aws_credentials:
         name: Configure AWS credentials
         runs-on: ubuntu-latest
