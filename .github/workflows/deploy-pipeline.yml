@@ -87,10 +87,10 @@ jobs:
 
       - name: Get Terraform output runner security group id
         if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                RUNNER_SECURITY_GROUP_ID_VALUE=$(terraform output -raw runner_security_group_id | grep -Eo "^[^:]+" | tail -n 1)
-                echo "RUNNER_SECURITY_GROUP_ID=$RUNNER_SECURITY_GROUP_ID_VALUE" >> $GITHUB_ENV
+        working-directory: ./iac
+        run: |
+          RUNNER_SECURITY_GROUP_ID_VALUE=$(terraform output -raw runner_security_group_id | grep -Eo "^[^:]+" | tail -n 1)
+          echo "RUNNER_SECURITY_GROUP_ID=$RUNNER_SECURITY_GROUP_ID_VALUE" >> $GITHUB_ENV
 
       - name: Get Terraform output task definition name
         if: env.TERRAFORM_ACTION == 'apply'
