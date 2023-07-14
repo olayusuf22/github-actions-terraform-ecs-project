@@ -149,7 +149,7 @@ jobs:
   create_ecr_repository:
     name: Create ECR repository
     needs: 
-      0- configure_aws_credentials
+      - configure_aws_credentials
       - deploy_aws_infrastructure
     if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
     runs-on: ubuntu-latest
@@ -262,3 +262,4 @@ jobs:
           IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
         run: |
             docker push ${{ secerets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+
