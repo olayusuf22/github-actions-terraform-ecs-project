@@ -238,8 +238,7 @@ jobs:
           IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
           IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.outputs.image_tag }}
         run: |
-          docker build \
-          --file C:\Users\olayu\OneDrive\Desktop\github-actions-terraform-ecs-project\Dockerfile \
+          Dockerfile build \
           --build-arg PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} \
           --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} \
           --build-arg REPOSITORY_NAME=${{ env.REPOSITORY_NAME }} \
