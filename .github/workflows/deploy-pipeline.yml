@@ -253,7 +253,7 @@ jobs:
 
       - name: Retag Docker image
         env:
-          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
         run: |
           docker tag ${{ env.IMAGE_NAME }} ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
 
