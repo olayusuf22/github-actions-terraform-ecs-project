@@ -233,10 +233,10 @@ jobs:
 
       - name: Build Docker image
         env:
-          DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.output.domain_name }}
-          RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.output.rds_endpoint }}
-          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
-          IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.output.image_tag }}
+          DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.outputs.domain_name }}
+          RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.outputs.rds_endpoint }}
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+          IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.outputs.image_tag }}
         run: |
           docker build \
           --build-arg PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} \
