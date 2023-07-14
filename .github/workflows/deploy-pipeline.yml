@@ -231,7 +231,7 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Docker Build
+      - name: Docker Build Image
         env:
           DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.outputs.domain_name }}
           RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.outputs.rds_endpoint }}
