@@ -15,250 +15,250 @@ env:
   WEB_FILE_UNZIP: rentzone
     
 jobs:
-      # Configure AWS credentials
-      configure_aws_credentials:
-        name: Configure AWS credentials
-        runs-on: ubuntu-latest
-        steps:
-          - name: Configure AWS credentials
-            uses: aws-actions/configure-aws-credentials@v1-node16
-            with:
-              aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY}}
-              aws-region: ${{ env.AWS_REGION }}
+  # Configure AWS credentials
+  configure_aws_credentials:
+    name: Configure AWS credentials
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{ env.AWS_REGION }}
 
 
-      # Build AWS infrastructure
-      deploy_aws_infrastructure:
-          name: Build AWS infrastructure
-          needs: configure_aws_credentials
-          runs-on: ubuntu-latest
-          steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
+  # Build AWS infrastructure
+  deploy_aws_infrastructure:
+    name: Build AWS infrastructure
+    needs: configure_aws_credentials
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-            - name: Set up Terraform
-              uses: hashicorp/setup-terraform@v2
-              with:
-                terraform_version: 1.5.2
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.2
 
-            - name: Run Terraform initialize
-              working-directory: ./iac
-              run: terraform init
+      - name: Run Terraform initialize
+        working-directory: ./iac
+        run: terraform init
 
-            - name: Run Terraform apply/destroy
-              working-directory: ./iac
-              run: terraform ${{ env.TERRAFORM_ACTION }} -auto-approve
+      - name: Run Terraform apply/destroy
+        working-directory: ./iac
+        run: terraform ${{ env.TERRAFORM_ACTION }} -auto-approve
 
-            - name: Get Terraform output image name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                IMAGE_NAME_VALUE=$(terraform output -raw image_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "IMAGE_NAME=$IMAGE_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output image name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          IMAGE_NAME_VALUE=$(terraform output -raw image_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "IMAGE_NAME=$IMAGE_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output domain name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                DOMAIN_NAME_VALUE=$(terraform output -raw domain_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "DOMAIN_NAME=$DOMAIN_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output domain name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          DOMAIN_NAME_VALUE=$(terraform output -raw domain_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "DOMAIN_NAME=$DOMAIN_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output RDS endpoint
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                RDS_ENDPOINT_VALUE=$(terraform output -raw rds_endpoint | grep -Eo "^[^:]+" | tail -n 1)
-                echo "RDS_ENDPOINT=$RDS_ENDPOINT_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output RDS endpoint
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          RDS_ENDPOINT_VALUE=$(terraform output -raw rds_endpoint | grep -Eo "^[^:]+" | tail -n 1)
+          echo "RDS_ENDPOINT=$RDS_ENDPOINT_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output image tag
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                IMAGE_TAG_VALUE=$(terraform output -raw image_tag | grep -Eo "^[^:]+" | tail -n 1)
-                echo "IMAGE_TAG=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output image tag
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          IMAGE_TAG_VALUE=$(terraform output -raw image_tag | grep -Eo "^[^:]+" | tail -n 1)
+          echo "IMAGE_TAG=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output private data subnet az1 id
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                PRIVATE_DATA_SUBNET_AZ1_ID_VALUE=$(terraform output -raw private_data_subnet_az1_id | grep -Eo "^[^:]+" | tail -n 1)
-                echo "PRIVATE_DATA_SUBNET_AZ1_ID=$PRIVATE_DATA_SUBNET_AZ1_ID_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output private data subnet az1 id
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          PRIVATE_DATA_SUBNET_AZ1_ID_VALUE=$(terraform output -raw private_data_subnet_az1_id | grep -Eo "^[^:]+" | tail -n 1)
+          echo "PRIVATE_DATA_SUBNET_AZ1_ID=$PRIVATE_DATA_SUBNET_AZ1_ID_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output runner security group id
-              if: env.TERRAFORM_ACTION == 'apply'
+      - name: Get Terraform output runner security group id
+        if: env.TERRAFORM_ACTION == 'apply'
               working-directory: ./iac
               run: |
                 RUNNER_SECURITY_GROUP_ID_VALUE=$(terraform output -raw runner_security_group_id | grep -Eo "^[^:]+" | tail -n 1)
                 echo "RUNNER_SECURITY_GROUP_ID=$RUNNER_SECURITY_GROUP_ID_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output task definition name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                TASK_DEFINITION_NAME_VALUE=$(terraform output -raw task_definition_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "TASK_DEFINITION_NAME=$TASK_DEFINITION_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output task definition name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          TASK_DEFINITION_NAME_VALUE=$(terraform output -raw task_definition_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "TASK_DEFINITION_NAME=$TASK_DEFINITION_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output ecs cluster name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                ECS_CLUSTER_NAME_VALUE=$(terraform output -raw ecs_cluster_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "ECS_CLUSTER_NAME=$ECS_CLUSTER_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output ecs cluster name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          ECS_CLUSTER_NAME_VALUE=$(terraform output -raw ecs_cluster_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "ECS_CLUSTER_NAME=$ECS_CLUSTER_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output ecs service name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                ECS_SERVICE_NAME_VALUE=$(terraform output -raw ecs_service_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "ECS_SERVICE_NAME=$ECS_SERVICE_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output ecs service name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          ECS_SERVICE_NAME_VALUE=$(terraform output -raw ecs_service_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "ECS_SERVICE_NAME=$ECS_SERVICE_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output environment file name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                ENVIRONMENT_FILE_NAME_VALUE=$(terraform output -raw environment_file_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "ENVIRONMENT_FILE_NAME=$ENVIRONMENT_FILE_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output environment file name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          ENVIRONMENT_FILE_NAME_VALUE=$(terraform output -raw environment_file_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "ENVIRONMENT_FILE_NAME=$ENVIRONMENT_FILE_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Get Terraform output env file bucket name
-              if: env.TERRAFORM_ACTION == 'apply'
-              working-directory: ./iac
-              run: |
-                ENV_FILE_BUCKET_NAME_VALUE=$(terraform output -raw env_file_bucket_name | grep -Eo "^[^:]+" | tail -n 1)
-                echo "ENV_FILE_BUCKET_NAME=$ENV_FILE_BUCKET_NAME_VALUE" >> $GITHUB_ENV
+      - name: Get Terraform output env file bucket name
+        if: env.TERRAFORM_ACTION == 'apply'
+        working-directory: ./iac
+        run: |
+          ENV_FILE_BUCKET_NAME_VALUE=$(terraform output -raw env_file_bucket_name | grep -Eo "^[^:]+" | tail -n 1)
+          echo "ENV_FILE_BUCKET_NAME=$ENV_FILE_BUCKET_NAME_VALUE" >> $GITHUB_ENV
 
-            - name: Print GITHUB_ENV contents
-              run: cat $GITHUB_ENV
+        - name: Print GITHUB_ENV contents
+          run: cat $GITHUB_ENV
 
-          outputs:
-            terraform_action: ${{ env.TERRAFORM_ACTION }}
-            image_name: ${{ env.IMAGE_NAME }}
-            domain_name: ${{ env.DOMAIN_NAME }}
-            rds_endpoint: ${{ env.RDS_ENDPOINT }}
-            image_tag: ${{ env.IMAGE_TAG }}
-            private_data_subnet_az1_id: ${{ env.PRIVATE_DATA_SUBNET_AZ1_ID }}
-            runner_security_group_id: ${{ env.RUNNER_SECURITY_GROUP_ID }}
-            task_definition_name: ${{ env.TASK_DEFINITION_NAME }}
-            ecs_cluster_name: ${{ env.ECS_CLUSTER_NAME }}
-            ecs_service_name: ${{ env.ECS_SERVICE_NAME }}
-            environment_file_name: ${{ env.ENVIRONMENT_FILE_NAME }}
-            env_file_bucket_name: ${{ env.ENV_FILE_BUCKET_NAME }}
-
-
-      # Create ECR repository
-      create_ecr_repository:
-        name: Create ECR repository
-        needs: 
-          - configure_aws_credentials
-          - deploy_aws_infrastructure
-        if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v3
-
-          - name: Check if ECR repository exists
-            env:
-              IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
-            run: |
-              result=$(aws ecr describe-repositories --repository-names "${{ env.IMAGE_NAME }}" | jq -r '.repositories[0].repositoryName')
-              echo "repo_name=$result" >> $GITHUB_ENV
-            continue-on-error: true
-
-          - name: Create ECR repository
-            env:
-              IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
-            if: env.repo_name != env.IMAGE_NAME
-            run: |
-              aws ecr create-repository --repository-name ${{ env.IMAGE_NAME }}
+      outputs:
+        terraform_action: ${{ env.TERRAFORM_ACTION }}
+        image_name: ${{ env.IMAGE_NAME }}
+        domain_name: ${{ env.DOMAIN_NAME }}
+        rds_endpoint: ${{ env.RDS_ENDPOINT }}
+        image_tag: ${{ env.IMAGE_TAG }}
+        private_data_subnet_az1_id: ${{ env.PRIVATE_DATA_SUBNET_AZ1_ID }}
+        runner_security_group_id: ${{ env.RUNNER_SECURITY_GROUP_ID }}
+        task_definition_name: ${{ env.TASK_DEFINITION_NAME }}
+        ecs_cluster_name: ${{ env.ECS_CLUSTER_NAME }}
+        ecs_service_name: ${{ env.ECS_SERVICE_NAME }}
+        environment_file_name: ${{ env.ENVIRONMENT_FILE_NAME }}
+        env_file_bucket_name: ${{ env.ENV_FILE_BUCKET_NAME }}
 
 
-      # Start self-hosted EC2 runner
-      start_runner:
-        name: Start self-hosted EC2 runner
-        needs: 
-          - configure_aws_credentials
-          - deploy_aws_infrastructure
-        if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
-        runs-on: ubuntu-latest
-        steps:
-          - name: Check for running EC2 runner
-            run: |
-              instances=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2-github-runner" "Name=instance-state-name,Values=running" --query 'Reservations[].Instances[].InstanceId' --output text)
+  # Create ECR repository
+    create_ecr_repository:
+    name: Create ECR repository
+    needs: 
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-              if [ -n "$instances" ]; then
-                echo "runner-running=true" >> $GITHUB_ENV
-              else
+      - name: Check if ECR repository exists
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        run: |
+          result=$(aws ecr describe-repositories --repository-names "${{ env.IMAGE_NAME }}" | jq -r '.repositories[0].repositoryName')
+          echo "repo_name=$result" >> $GITHUB_ENV
+          continue-on-error: true
+
+      - name: Create ECR repository
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        if: env.repo_name != env.IMAGE_NAME
+        run: |
+          aws ecr create-repository --repository-name ${{ env.IMAGE_NAME }}
+
+
+  # Start self-hosted EC2 runner
+    start_runner:
+      name: Start self-hosted EC2 runner
+      needs: 
+        - configure_aws_credentials
+        - deploy_aws_infrastructure
+      if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check for running EC2 runner
+          run: |
+            instances=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2-github-runner" "Name=instance-state-name,Values=running" --query 'Reservations[].Instances[].InstanceId' --output text)
+
+            if [ -n "$instances" ]; then
+              echo "runner-running=true" >> $GITHUB_ENV
+            else
                 echo "runner-running=false" >> $GITHUB_ENV
-              fi
+            fi
 
-          - name: Start EC2 runner
-            if: env.runner-running != 'true'
-            id: start-ec2-runner
-            uses: machulav/ec2-github-runner@v2
-            with:
-              mode: start 
-              github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-              ec2-image-id: ami-06136b840c80a8901
-              ec2-instance-type: t2.micro
-              subnet-id: ${{ needs.deploy_aws_infrastructure.outputs.private_data_subnet_az1_id }}
-              security-group-id: ${{ needs.deploy_aws_infrastructure.output.runner_security_group_id }}
-              aws-resource-tags: > 
-                [
-                  {"Key": "Name", "Value": "ec2-github-runner"},
-                  {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
-                ]
+        - name: Start EC2 runner
+          if: env.runner-running != 'true'
+          id: start-ec2-runner
+          uses: machulav/ec2-github-runner@v2
+          with:
+            mode: start 
+            github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            ec2-image-id: ami-06136b840c80a8901
+            ec2-instance-type: t2.micro
+            subnet-id: ${{ needs.deploy_aws_infrastructure.outputs.private_data_subnet_az1_id }}
+            security-group-id: ${{ needs.deploy_aws_infrastructure.output.runner_security_group_id }}
+            aws-resource-tags: > 
+              [
+                {"Key": "Name", "Value": "ec2-github-runner"},
+                {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+              ]
 
-        outputs:
-          label: ${{ steps.start-ec2-runner.outputs.label }}
-          ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+      outputs:
+        label: ${{ steps.start-ec2-runner.outputs.label }}
+        ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
 
 
-      # Build and push Docker image to ECR
-      build_and_push_image:
-        name: Build and push Docker image to ECR
-        needs:
-          - configure_aws_credentials
-          - deploy_aws_infrastructure
-          - create_ecr_repository
-          - start_runner
-       if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
-       runs-on: self hosted
-       steps:
-         - name: Checkout repository
-           uses: actions/checkout@v3
+    # Build and push Docker image to ECR
+    build_and_push_image:
+      name: Build and push Docker image to ECR
+      needs:
+        - configure_aws_credentials
+        - deploy_aws_infrastructure
+        - create_ecr_repository
+        - start_runner
+      if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+      runs-on: self hosted
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
-         - name: Login to Amazon ECR
-           uses: aws-actions/amazon-ecr-login@v1
+        - name: Login to Amazon ECR
+          uses: aws-actions/amazon-ecr-login@v1
 
-         - name: Build Docker image
-           env:
-             DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.output.domain_name }}
-             RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.output.rds_endpoint }}
-             IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
-             IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.output.image_tag }}
-            run: |
-              docker build \
-              --build-arg PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} \
-              --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} \
-              --build-arg REPOSITORY_NAME=${{ env.REPOSITORY_NAME }} \
-              --build-arg WEB_FILE_ZIP=${{ env.WEB_FILE_ZIP }} \
-              --build-arg WEB_FILE_UNZIP=${{ env.WEB_FILE_UNZIP }} \
-              --build-arg DOMAIN_NAME=${{ env.DOMAIN_NAME }} \
-              --build-arg RDS_ENDPOINT=${{ env.RDS_ENDPOINT }} \
-              --build-arg RDS_DB_NAME=${{ secerets.RDS_DB_NAME }} \
-              --build-arg RDS_DB_USERNAME=${{ secrets.RDS_DB_USERNAME }} \
-              --build-arg RDS_DB_PASSWORD=${{ secretsRDS_DB_PASSWORD. }} \
-              -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        - name: Build Docker image
+          env:
+            DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.output.domain_name }}
+            RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.output.rds_endpoint }}
+            IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
+            IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.output.image_tag }}
+          run: |
+            docker build \
+            --build-arg PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} \
+            --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} \
+            --build-arg REPOSITORY_NAME=${{ env.REPOSITORY_NAME }} \
+            --build-arg WEB_FILE_ZIP=${{ env.WEB_FILE_ZIP }} \
+            --build-arg WEB_FILE_UNZIP=${{ env.WEB_FILE_UNZIP }} \
+            --build-arg DOMAIN_NAME=${{ env.DOMAIN_NAME }} \
+            --build-arg RDS_ENDPOINT=${{ env.RDS_ENDPOINT }} \
+            --build-arg RDS_DB_NAME=${{ secerets.RDS_DB_NAME }} \
+            --build-arg RDS_DB_USERNAME=${{ secrets.RDS_DB_USERNAME }} \
+            --build-arg RDS_DB_PASSWORD=${{ secretsRDS_DB_PASSWORD. }} \
+            -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
-          - name: Retag Docker image
-            env:
-              IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
-            run: |
-              docker tag ${{ env.IMAGE_NAME }} ${{ secerets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+        - name: Retag Docker image
+          env:
+            IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
+          run: |
+            docker tag ${{ env.IMAGE_NAME }} ${{ secerets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
 
-          - name: Push Docker Image to Amazon ECR
-            env:
-              IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
-            run: |
+        - name: Push Docker Image to Amazon ECR
+          env:
+            IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.output.image_name }}
+          run: |
               docker push ${{ secerets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
