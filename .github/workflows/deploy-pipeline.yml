@@ -197,12 +197,12 @@ jobs:
         id: start-ec2-runner
         uses: machulav/ec2-github-runner@v2
         with:
-          mode: start 
+          mode: start
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           ec2-image-id: ami-06136b840c80a8901
           ec2-instance-type: t2.micro
           subnet-id: ${{ needs.deploy_aws_infrastructure.outputs.private_data_subnet_az1_id }}
-          security-group-id: ${{ needs.deploy_aws_infrastructure.output.runner_security_group_id }}
+          security-group-id: ${{ needs.deploy_aws_infrastructure.outputs.runner_security_group_id }}
           aws-resource-tags: > 
             [
               {"Key": "Name", "Value": "ec2-github-runner"},
