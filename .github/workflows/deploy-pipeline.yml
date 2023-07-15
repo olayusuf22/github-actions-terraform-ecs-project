@@ -319,7 +319,7 @@ jobs:
   
       - name: Remove the placeholder (sql) directory
         run: |
-           rm -rf flyway-${{  }}/sql/
+          rm -rf flyway-${{  }}/sql/
   
       - name: Copy the sql folder into the Flyway sub-directory
         run: |
