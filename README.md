@@ -8,36 +8,36 @@ Install Terraform on Your Machine:
 Download and install Terraform on your local machine from the Terraform website or use a package manager.
 Build AWS Infrastructure:
 
-Define your AWS infrastructure using Terraform code (e.g., EC2 instances, RDS database, S3 bucket, ECS Fargate service, etc.).
+.Define your AWS infrastructure using Terraform code (e.g., EC2 instances, RDS database, S3 bucket, ECS Fargate service, etc.).
 Initialize Terraform and apply the configuration to create the infrastructure on AWS.
 Create GitHub Action for Application Deployment:
 
-Create a GitHub repository for your project if you haven't already.
+.Create a GitHub repository for your project if you haven't already.
 Set up GitHub Actions workflow YAML file in your repository to automate deployment.
 Define steps in the workflow YAML file to trigger deployment based on events such as code pushes or pull requests.
 Create ECR Repository:
 
-Use AWS CLI or AWS Management Console to create a repository in Amazon Elastic Container Registry (ECR) to store Docker images.
+.Use AWS CLI or AWS Management Console to create a repository in Amazon Elastic Container Registry (ECR) to store Docker images.
 Start Self-hosted EC2 Server:
 
 If needed, provision an EC2 instance to act as a self-hosted runner for GitHub Actions.
 Build and Push Docker Image to ECR:
 
-Set up Dockerfile for your application.
+.Set up Dockerfile for your application.
 Build Docker image locally or as part of GitHub Actions workflow.
 Push the built Docker image to the ECR repository.
 Create Environment File and Export to S3:
 
-Create environment configuration files (e.g., .env) for your application.
+.Create environment configuration files (e.g., .env) for your application.
 Upload these files to an S3 bucket to keep them centralized and accessible.
 Migrate Data into RDS Database with Flyway:
 
-Set up Flyway for database schema migrations.
+.Set up Flyway for database schema migrations.
 Create migration scripts to manage database changes.
 Execute Flyway migrations as part of your deployment process.
 Stop Self-hosted EC2 Runner:
 
-Stop or terminate the self-hosted EC2 runner if it's no longer needed to reduce costs.
+.Stop or terminate the self-hosted EC2 runner if it's no longer needed to reduce costs.
 Create New Task Definition Revision:
 
 Define a new task definition revision in Amazon ECS with updated Docker image details or configurations.
