@@ -5,10 +5,10 @@ output "image_name" {
 }
 
 ### outputs needed to build docker image
-# domain name
-output "domain_name" {
-  value = join("", [var.record_name, ".", var.domain_name])
-}
+# # domain name
+# output "domain_name" {
+#   value = join("", [var.record_name, ".", var.domain_name])
+# }
 
 # rds endpoint
 output "rds_endpoint" {
@@ -59,7 +59,7 @@ output "env_file_bucket_name" {
   value = aws_s3_bucket.env_file_bucket.id
 }
 
-# website url
-output "website_url" {
-  value = join("", ["https://", var.record_name, ".", var.domain_name])
-}
+# # website url
+# output "website_url" {
+#   value = join("", ["https://", var.record_name, ".", var.domain_name])
+# }

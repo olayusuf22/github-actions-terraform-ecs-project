@@ -3,7 +3,7 @@ terraform {
   backend "s3" {
     bucket         = "jannah-terraform-remote-state"
     key            = "rentzone-app/terraform.tfstate"
-    region         = "us-east-1"
+    region         = "us-east-2"
     dynamodb_table = "terraform-state-lock"
   }
 }
