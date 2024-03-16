@@ -32,17 +32,18 @@ RUN amazon-linux-extras enable php8.2 && \
     php-intl \
     php-zip
 
-# Download the MySQL repository package
-RUN wget https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+# Install deltarpm for efficient updates (optional but recommended)
+sudo yum install deltarpm -y
 
-# Import the GPG key for the MySQL repository
-RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
+# Import the correct GPG key for MySQL 8.0 Community Server
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 
-# Install the MySQL repository package
-RUN yum localinstall mysql80-community-release-el7-3.noarch.rpm -y
+#  Clean any potential cache issues
+sudo yum clean all
 
-# Update yum cache and install the MySQL client package
-RUN yum update -y && yum install -y mysql-community-client
+#  Proceed with the installation
+sudo yum update -y && sudo yum install -y mysql-community-client
+
 
 # Install the MySQL community server package
 RUN yum install mysql-community-server -y
