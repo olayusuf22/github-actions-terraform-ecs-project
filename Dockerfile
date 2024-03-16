@@ -33,10 +33,12 @@ RUN amazon-linux-extras enable php8.2 && \
     php-zip
 
 # Download the MySQL repository package
-RUN wget https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+RUN wget https://repo.mysql.com/mysql-community-server-8.0.36-1.el7.x86_64.rpm
+# RUN wget https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
 
 # Import the GPG key for the MySQL repository
-RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
+RUN rpm -ivh mysql-community-server-8.0.36-1.el7.x86_64.rpm
+# RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
 
 # Install the MySQL repository package
 RUN yum localinstall mysql80-community-release-el7-3.noarch.rpm -y
