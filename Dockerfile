@@ -41,6 +41,9 @@ RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
 # Install the MySQL repository package
 RUN yum localinstall mysql80-community-release-el7-3.noarch.rpm -y
 
+# Update yum cache and install the MySQL client package
+RUN yum update -y && yum install -y mysql-community-client
+
 # Install the MySQL community server package
 RUN yum install mysql-community-server -y
 
