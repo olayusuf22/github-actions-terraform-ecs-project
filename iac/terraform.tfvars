@@ -22,8 +22,8 @@ database_instance_class      = "db.t2.micro"
 publicly_accessible          = "false"
 
 # acm variables
-domain_name       = "oly22.com"
-alternative_names = "*.oly22.com"
+domain_name       = "tech-syncs.com"
+alternative_names = "*.tech-syncs.com"
 
 # s3 variables
 env_file_bucket_name = "an-nimo-rental-app-env-file-bucket"
