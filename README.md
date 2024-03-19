@@ -1,3 +1,5 @@
+This README provides instructions for deploying a pipeline to automate the building and deployment process of AWS infrastructure, Dockerized applications, and database migrations.
+
 Steps:
 Deploy Pipeline to Build
 
