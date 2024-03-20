@@ -4,11 +4,11 @@ output "image_name" {
   value = var.image_name
 }
 
-### outputs needed to build docker image
-# # domain name
-# output "domain_name" {
-#   value = join("", [var.record_name, ".", var.domain_name])
-# }
+## outputs needed to build docker image
+# domain name
+output "domain_name" {
+  value = join("", [var.record_name, ".", var.domain_name])
+}
 
 # rds endpoint
 output "rds_endpoint" {
