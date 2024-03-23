@@ -14,23 +14,23 @@ RUN yum install -y wget
 RUN yum install -y httpd
 
 # Install PHP and various extensions
-RUN amazon-linux-extras enable php8.2 && \
+RUN amazon-linux-extras enable php7.4 && \
   yum clean metadata && \
   yum install -y \
-    php \
-    php-common \
-    php-pear \
-    php-cgi \
-    php-curl \
-    php-mbstring \
-    php-gd \
-    php-mysqlnd \
-    php-gettext \
-    php-json \
-    php-xml \
-    php-fpm \
-    php-intl \
-    php-zip
+  php \
+  php-common \
+  php-pear \
+  php-cgi \
+  php-curl \
+  php-mbstring \
+  php-gd \
+  php-mysqlnd \
+  php-gettext \
+  php-json \
+  php-xml \
+  php-fpm \
+  php-intl \
+  php-zip
 
 # Download the latest MySQL repository package (EL7)
 RUN wget https://repo.mysql.com/mysql80-community-release-el7-11.noarch.rpm
