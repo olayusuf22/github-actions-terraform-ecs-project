@@ -1,6 +1,6 @@
 resource "aws_db_instance" "database_instance" {
   engine                 = "mysql"
-  engine_version         = "8.0.31"      # Change to a supported MySQL engine version
+  engine_version         = "8.0.36"      # Change to a supported MySQL engine version
   instance_class         = "db.t3.micro" # Change to a supported instance type
   allocated_storage      = 20            # Adjust storage as needed
   multi_az               = var.multi_az_deployment
